@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {View, Text, StyleSheet, KeyboardAvoidingView, TouchableOpacity, TextInput, Platform} from 'react-native';
-import { Audio } from 'expo-av';
 class Task extends Component{
     constructor(props) {
         super(props);
@@ -33,30 +32,32 @@ class Task extends Component{
 
     componentDidUpdate(prevProps) {
         if ( this.props.stop === true ) {
-            this.props.endS.pauseAsync();
+            //this.props.endS.pauseAsync();
             clearInterval(this.inervalId);
         }
         if ( (prevProps.run.i !== this.props.run.i
             || (prevProps.stop !== this.props.stop && this.props.stop === false ))
             && this.props.run.i === true ) {
-            this.props.beginS.playAsync();
+            //this.props.beginS.playAsync();
             this.timeCount();
         }
     }
     componentWillUnmount() {
-        this.props.endS.pauseAsync();
+        //this.props.endS.pauseAsync();
         clearInterval(this.inervalId);
     }
 
     timeCount = () => {
-        this.props.beginS.playAsync();
+        this.props.endS.pauseAsync();
+        this.props.beginS.replayAsync();
         this.inervalId = setInterval(() => {
             if ( this.state.time === 0 ) {
                 clearInterval(this.inervalId);
                 this.nextRun();
-                this.props.endS.playAsync();
+                this.props.beginS.pauseAsync();
+                this.props.endS.replayAsync();
                 return;
-            };
+            }
             this.setState(
                 (prevState) => {
                     return { time: prevState.time - 1 };

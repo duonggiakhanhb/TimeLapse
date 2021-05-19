@@ -30,13 +30,15 @@ class App extends Component{
 
   componentDidMount() {
     this.sound = new Audio.Sound();
-    this.sound.loadAsync(require('./data/sound/endTime.wav'));
     this.beginS = new Audio.Sound();
     this.endS = new Audio.Sound();
+    this.sound.loadAsync(require('./data/sound/endTime.wav'));
     this.beginS.loadAsync(require('./data/sound/begin.wav'));
     this.endS.loadAsync(require('./data/sound/end.mp3'));
   }
   componentWillUnmount() {
+    this.endS.pauseAsync();
+    this.beginS.pauseAsync();
     this.sound.pauseAsync();
   }
 
@@ -50,7 +52,6 @@ class App extends Component{
   /*CRUD*/
     /*Add*/
   handleAddTask = () => {
-
     Keyboard.dismiss();
     let task = this.state.task;
     if (task.timeLapse === '' ) {
@@ -109,6 +110,9 @@ class App extends Component{
   /*Button*/
     /*Restart*/
   restart = () => {
+    this.endS.pauseAsync();
+    this.beginS.pauseAsync();
+    this.sound.pauseAsync();
     let taskItems = this.state.taskItems;
     taskItems.map((item) => {
       item.run.i = false;
@@ -149,7 +153,8 @@ class App extends Component{
   setIdCurr = (id) => {
     if (this.state.taskItems.length <= id ) {
       this.setState({ stop: false, start: false });
-      this.sound.playAsync();
+      this.endS.pauseAsync();
+      this.sound.replayAsync();
       return;
     }
     this.setState({idCurr: this.state.taskItems[id].id })
