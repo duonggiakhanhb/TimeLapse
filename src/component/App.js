@@ -31,6 +31,13 @@ class App extends Component{
   componentDidMount() {
     this.sound = new Audio.Sound();
     this.sound.loadAsync(require('./data/sound/endTime.wav'));
+    this.beginS = new Audio.Sound();
+    this.endS = new Audio.Sound();
+    this.beginS.loadAsync(require('./data/sound/begin.wav'));
+    this.endS.loadAsync(require('./data/sound/end.mp3'));
+  }
+  componentWillUnmount() {
+    this.sound.pauseAsync();
   }
 
   /*Navabar*/
@@ -71,18 +78,21 @@ class App extends Component{
     let taskItems = [...this.state.taskItems];
     let index = taskItems.findIndex((item) => item.id === id);
     taskItems.splice(index, 1);
-    this.setState({taskItems});
+    this.setState({taskItems, disable: false, update: false, editDisabled: false });
+    if (taskItems.length === 0) {
+      this.setState({ editDisabled: false });
+    }
   }
     /*Update*/
   update = (id, time, name) => {
     let taskItems = [...this.state.taskItems];
     let index = taskItems.findIndex((item) => item.id === id);
-    console.log(index);
     taskItems[index].time = time;
     taskItems[index].name = name;
     this.setState({taskItems});
   }
   disableTouch = () => {
+
     this.setState( { disable: !this.state.disable, update: !this.state.update, editDisabled: !this.state.editDisabled } );
   }
     /*Input Value*/
@@ -187,6 +197,8 @@ class App extends Component{
                               setId={this.setIdCurr} run={item.run} stop={item.stop}
                               disable={this.state.disable}
                               disableTouch={this.disableTouch}
+                              beginS={this.beginS}
+                              endS={this.endS}
                               edit={this.state.edit}
                               update={this.update}
                               next={this.nextTask} delete={this.deleteTask}

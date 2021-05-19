@@ -26,38 +26,35 @@ class Task extends Component{
         this.setState({ update: !this.state.update });
         this.props.update(this.props.text.id, this.state.time, this.state.name);
     }
-    beginS = new Audio.Sound();
-    endS = new Audio.Sound();
+
     componentDidMount() {
         this.setState({name: this.props.text.name});
-        this.beginS.loadAsync(require('./data/sound/begin.wav'));
-        this.endS.loadAsync(require('./data/sound/end.mp3'));
     }
 
     componentDidUpdate(prevProps) {
         if ( this.props.stop === true ) {
-            this.endS.pauseAsync();
+            this.props.endS.pauseAsync();
             clearInterval(this.inervalId);
         }
         if ( (prevProps.run.i !== this.props.run.i
             || (prevProps.stop !== this.props.stop && this.props.stop === false ))
             && this.props.run.i === true ) {
-            this.beginS.playAsync();
+            this.props.beginS.playAsync();
             this.timeCount();
         }
     }
     componentWillUnmount() {
-        this.endS.pauseAsync();
+        this.props.endS.pauseAsync();
         clearInterval(this.inervalId);
     }
 
     timeCount = () => {
-        this.beginS.playAsync();
+        this.props.beginS.playAsync();
         this.inervalId = setInterval(() => {
             if ( this.state.time === 0 ) {
                 clearInterval(this.inervalId);
                 this.nextRun();
-                this.endS.playAsync();
+                this.props.endS.playAsync();
                 return;
             };
             this.setState(
@@ -79,7 +76,7 @@ class Task extends Component{
                                       onLongPress={this.disableTouch}>
                         <View style={styles.itemLeft}>
                             <TouchableOpacity
-                                onPress={() => props.delete(props.id) }>
+                                onPress={() => props.delete(props.text.id) }>
                                 <View style={[styles.square, this.props.edit ? {backgroundColor: '#ec3d64'} : null]}>
                                 </View>
                             </TouchableOpacity>
@@ -94,11 +91,12 @@ class Task extends Component{
         return (
             <View>
                 <TouchableOpacity style={[styles.item, this.props.disable ? styles.itemNoUpdate : null ]}
-                                  disabled={!this.props.edit ? !this.state.update: this.props.disable ?? false }
+                                  disabled={!this.props.edit ? !this.state.update: this.props.disable ?? true }
                                   onLongPress={this.disableTouch}>
                     <View style={styles.itemLeft}>
                         <TouchableOpacity
-                            onPress={() => props.delete(props.id) }>
+                            disabled={!this.props.edit ? !this.state.update: this.props.disable ?? true }
+                            onPress={() => props.delete(props.text.id) }>
                             <View style={[styles.square, this.props.edit ? {backgroundColor: '#ec3d64'}: null]}>
                             </View>
                         </TouchableOpacity>
