@@ -29,6 +29,7 @@ class Task extends Component{
     beginS = new Audio.Sound();
     endS = new Audio.Sound();
     componentDidMount() {
+        this.setState({name: this.props.text.name});
         this.beginS.loadAsync(require('./data/sound/begin.wav'));
         this.endS.loadAsync(require('./data/sound/end.mp3'));
     }
