@@ -55,12 +55,10 @@ class App extends Component{
   handleAddTask = () => {
     Keyboard.dismiss();
     let task = this.state.task;
-    if (this.state.task.timeLapse === null){
-      this.state.task.timeLapse = this.state.timeDefault;
-      if (this.state.task.restTime === null){
-        this.state.task.restTime = this.state.timeDefault;
-      }
-    }
+    task.timeLapse = task.timeLapse ??  15;
+    task.restTime = task.restTime ?? 15;
+    if (task.timeLapse == '') task.timeLapse = 0;
+    if (task.restTime == '') task.restTime = 0;
     this.setState({task});
     this.setState({
       taskItems: [...this.state.taskItems, this.state.task],
@@ -103,6 +101,7 @@ class App extends Component{
     this.setState({task});
   }
   changeTime = (time, prop) =>{
+    console.log(time);
     let task = this.state.task;
     task[prop] = time;
     this.setState({task});
@@ -136,6 +135,7 @@ class App extends Component{
     );
     taskItems[index] = {...taskItems[index],run: {i: true, finish: taskItems[index].run.finish}}
     this.setState({ taskItems, stop: true, start: false });
+    this.beginS.replayAsync();
   }
     /*Stop*/
   stopHandle = () => {
@@ -232,10 +232,10 @@ class App extends Component{
             <TextInput style={[styles.input, styles.head]} placeholder={'Write a task'} value={this.state.task.name}
                        onChangeText={text => this.changeText(text)}/>
                 <Text>T</Text>
-            <TextInput keyboardType={'number-pad'} style={[styles.input, styles.time]} placeholder={(this.state.task.timeLapse ?? this.state.timeDefault).toString()} value={this.state.task.timeLapse}
+            <TextInput keyboardType={'number-pad'} style={[styles.input, styles.time]} placeholder={(this.state.task.timeLapse ?? this.state.timeDefault).toString()} value={(this.state.task.timeLapse ?? 15).toString()}
                        onChangeText={time => this.changeTime(time, 'timeLapse')}/>
                 <Text>R</Text>
-            <TextInput keyboardType={'number-pad'} style={[styles.input, styles.time]} placeholder={(this.state.task.restTime ?? this.state.timeDefault).toString()} value={this.state.task.restTime}
+            <TextInput keyboardType={'number-pad'} style={[styles.input, styles.time]} placeholder={(this.state.task.restTime ?? this.state.timeDefault).toString()} value={(this.state.task.restTime ?? 15).toString()}
                        onChangeText={time => this.changeTime(time, 'restTime')}/>
             <TouchableOpacity onPress={this.handleAddTask}>
               <View style={styles.addWrapper}>

@@ -21,6 +21,7 @@ class Task extends Component{
         this.props.setId(this.props.id + 1);    /* set idCrurrent +1 */
         this.props.next(this.props.id, true, true, true);   /* set restFinish = true */
         this.props.next(this.props.id+1, true, false);      /* in next item change i = true to run */
+        return;
     }
     disableTouch = () => {
         this.props.disableTouch();
@@ -58,7 +59,7 @@ class Task extends Component{
     }
     restTimeCount = () => {
     this.intervalRest = setInterval(() => {
-        if (this.state.restTime === 0){
+        if (this.state.restTime == 0){
             clearInterval(this.intervalRest);
             /* restFinish true*/
             if( !this.props.run.restFinish ) this.nextRun();
@@ -68,10 +69,14 @@ class Task extends Component{
     },1000);
 }
     timeCount = () => {
+        if ( this.state.time == 0 && this.state.restTime == 0 ) {
+            this.nextRun();
+            return;
+        }
         this.props.beginS.replayAsync();
         this.props.endS.pauseAsync();
         this.intervalTime = setInterval(() => {
-            if ( this.state.time === 0 ) {
+            if ( this.state.time == 0 ) {
                 clearInterval(this.intervalTime);
                 if( this.props.run.finish == false ) {
                     /* Time run out set finish true and play endS sound*/
