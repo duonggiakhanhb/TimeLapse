@@ -8,13 +8,13 @@ class App extends Component{
     id: 0,
     idCurr: 0,
     timeDefault: 15,
-    edit: false,
+    editing: false,
     editDisabled: false,
     save: false,
     stop: false,
     start: false,
     disable: false,
-    update: false,
+    updating: false,
     task: {
       'id': 0,
       'name': '',
@@ -45,8 +45,8 @@ class App extends Component{
   /*Navabar*/
   activeEdit = () => {
     this.restart();
-    if (this.state.edit === true ) this.setState({ disable: false });
-    this.setState({ edit: !this.state.edit });
+    if (this.state.editing === true ) this.setState({ disable: false });
+    this.setState({ editing: !this.state.editing });
 
   }
   /*CRUD*/
@@ -79,10 +79,7 @@ class App extends Component{
     let taskItems = [...this.state.taskItems];
     let index = taskItems.findIndex((item) => item.id === id);
     taskItems.splice(index, 1);
-    this.setState({taskItems, disable: false, update: false, editDisabled: false });
-    if (taskItems.length === 0) {
-      this.setState({ editDisabled: false });
-    }
+    this.setState({taskItems, disable: false, updating: false, editDisabled: false });
   }
     /*Update*/
   update = (id, time, name) => {
@@ -93,8 +90,7 @@ class App extends Component{
     this.setState({taskItems});
   }
   disableTouch = () => {
-
-    this.setState( { disable: !this.state.disable, update: !this.state.update, editDisabled: !this.state.editDisabled } );
+    this.setState( { disable: !this.state.disable, updating: !this.state.updating, editDisabled: !this.state.editDisabled } );
   }
     /*Input Value*/
   changeText = (text) =>{
@@ -109,25 +105,25 @@ class App extends Component{
   }
   /*Button*/
     /*Restart*/
-  restart = () => {
-    this.endS.pauseAsync();
-    this.beginS.pauseAsync();
-    this.sound.pauseAsync();
-    let taskItems = this.state.taskItems;
-    taskItems.map((item) => {
-      item.run.i = false;
-      item.run.finish = false;
-    });
-    this.setState({ taskItems });
-    this.setState({ id: this.state.id + 1});
-    if(taskItems.length > 0 ) {
-      this.setState({ start: true , stop: false });
-      this.setState({ idCurr: this.state.taskItems[0].id });
+    restart = () => {
+        this.endS.pauseAsync();
+        this.beginS.pauseAsync();
+        this.sound.pauseAsync();
+        let taskItems = this.state.taskItems;
+        taskItems.map((item) => {
+            item.run.i = false;
+            item.run.finish = false;
+        });
+        this.setState({taskItems});
+        this.setState({id: this.state.id + 1});
+      if (taskItems.length !== 0) {
+        this.setState({start: true, stop: false});
+        this.setState({idCurr: this.state.taskItems[0].id});
+      } else {
+        this.setState({start: false});
+        return;
+      }
     }
-    else {
-      this.setState({ start: false });
-    }
-  }
     /*Start*/
   startHandle = () => {
     let taskItems = [...this.state.taskItems];
@@ -182,7 +178,8 @@ class App extends Component{
           <View style={styles.nav}>
           <Text style={styles.sectionTitle}>Today's tasks</Text>
             <TouchableOpacity disabled={this.state.editDisabled} style={styles.edit} onPress={this.activeEdit} >
-            <Text style={[styles.editText, this.state.edit && true ? {color: 'red'} : {color: 'blue'}]}>Edit</Text>
+                {/*If editing turn on: "editing" is "Red", else "Blue"*/}
+            <Text style={[styles.editText, this.state.editing && true ? {color: 'red'} : {color: 'blue'}]}>Edit</Text>
           </TouchableOpacity>
           </View>
           {/* Added this scroll view to enable scrolling when list gets longer than the page */}
@@ -204,7 +201,7 @@ class App extends Component{
                               disableTouch={this.disableTouch}
                               beginS={this.beginS}
                               endS={this.endS}
-                              edit={this.state.edit}
+                              edit={this.state.editing}
                               update={this.update}
                               next={this.nextTask} delete={this.deleteTask}
                         />
@@ -218,7 +215,10 @@ class App extends Component{
 
           {/* Write a task */}
           {/* Uses a keyboard avoiding view which ensures the keyboard does not cover the items on screen */}
-          {this.state.edit ? !this.state.update && <KeyboardAvoidingView
+            {/* If editing true */}
+          {this.state.editing ? !this.state.updating &&
+              /* If updating false display Add, else is nothing */
+              <KeyboardAvoidingView
               behavior={Platform.OS === "ios" ? "padding" : "height"}
               style={styles.writeTaskWrapper}
           >
@@ -232,7 +232,7 @@ class App extends Component{
               </View>
             </TouchableOpacity>
           </KeyboardAvoidingView>
-            : /* Button Display */
+            : /* Button Display (editing is false) */
               <View style={styles.writeTaskWrapper}>
             <TouchableOpacity onPress={this.restart} style={[styles.btnFooter, {backgroundColor: '#1090a3'}]}>
             <Text style={styles.btnText}>Restart</Text>

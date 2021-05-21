@@ -4,7 +4,7 @@ class Task extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            update: false,
+            updating: false,
             name: this.props.name,
             time: this.props.text.timeLapse,
         }
@@ -22,7 +22,7 @@ class Task extends Component{
     }
     disableTouch = () => {
         this.props.disableTouch();
-        this.setState({ update: !this.state.update });
+        this.setState({ updating: !this.state.updating });
         this.props.update(this.props.text.id, this.state.time, this.state.name);
     }
 
@@ -67,7 +67,7 @@ class Task extends Component{
 
     render() {
         const { props } = this;
-        if( this.state.update ) {
+        if( this.state.updating ) {
             return (
                     <KeyboardAvoidingView
                         keyboardVerticalOffset = {64}
@@ -78,10 +78,9 @@ class Task extends Component{
                         <View style={styles.itemLeft}>
                             <TouchableOpacity
                                 onPress={() => props.delete(props.text.id) }>
-                                <View style={[styles.square, this.props.edit ? {backgroundColor: '#ec3d64'} : null]}>
+                                <View style={[styles.square, {backgroundColor: '#ec3d64'} ]}>
                                 </View>
                             </TouchableOpacity>
-
                             <TextInput style={styles.itemText} placeholder={'Write a task'} value={this.state.name} onChangeText={this.changeText} />
                         </View>
                         <TextInput keyboardType={'number-pad'} style={styles.circular} value={this.state.time.toString()} onChangeText={this.changeTime}/>
@@ -92,16 +91,19 @@ class Task extends Component{
         return (
             <View>
                 <TouchableOpacity style={[styles.item, this.props.disable ? styles.itemNoUpdate : null ]}
-                                  disabled={!this.props.edit ? !this.state.update: this.props.disable ?? true }
+                                  /* disabled: edit true, disabled true
+                                      disabled: edit false,
+                                   */
+                                  disabled={this.props.edit ? (this.props.disable) : true  }
                                   onLongPress={this.disableTouch}>
                     <View style={styles.itemLeft}>
                         <TouchableOpacity
-                            disabled={!this.props.edit ? !this.state.update: this.props.disable ?? true }
+                            /*disabled add: edit false or disabled true*/
+                            disabled={ !this.props.edit ? true : (this.props.disable) }
                             onPress={() => props.delete(props.text.id) }>
                             <View style={[styles.square, this.props.edit ? {backgroundColor: '#ec3d64'}: null]}>
                             </View>
                         </TouchableOpacity>
-
                         <Text style={styles.itemText}>{this.props.text.name}</Text>
                     </View>
                     <View style={styles.circular}><Text>{this.state.time}</Text></View>
@@ -121,7 +123,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         marginBottom: 20,
     },
-    itemUpdate: {
+    itemupdating: {
         width: '100%',
         backgroundColor: '#e0d0d0',
     },
