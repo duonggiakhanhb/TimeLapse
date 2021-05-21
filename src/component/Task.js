@@ -7,18 +7,17 @@ class Task extends Component{
             updating: false,
             name: this.props.name,
             time: this.props.text.timeLapse,
+            restTime: this.props.text.restTime,
+
         }
     }
     changeText = (name) =>{
         this.setState({name});
     }
-    changeTime = (time) =>{
-        this.setState({time});
+    changeTime = (time, prop) =>{
+        this.setState({[prop]: time});
     }
     nextRun = () => {
-        this.props.beginS.pauseAsync();
-        this.props.endS.replayAsync();
-        console.log('end');
         this.props.setId(this.props.id + 1);
         this.props.next(this.props.id, false, true);
         this.props.next(this.props.id+1, true, false);
@@ -26,7 +25,7 @@ class Task extends Component{
     disableTouch = () => {
         this.props.disableTouch();
         this.setState({ updating: !this.state.updating });
-        this.props.update(this.props.text.id, this.state.time, this.state.name);
+        this.props.update(this.props.text.id, this.state.time, this.state.restTime, this.state.name);
     }
 
     componentDidMount() {
@@ -36,7 +35,7 @@ class Task extends Component{
     componentDidUpdate(prevProps) {
         if ( this.props.stop === true ) {
             //this.props.endS.pauseAsync();
-            clearInterval(this.inervalId);
+            clearInterval(this.intervalTime);
         }
         if ( (prevProps.run.i !== this.props.run.i
             || (prevProps.stop !== this.props.stop && this.props.stop === false ))
@@ -47,17 +46,26 @@ class Task extends Component{
     }
     componentWillUnmount() {
         //this.props.endS.pauseAsync();
-        clearInterval(this.inervalId);
+        clearInterval(this.intervalTime);
     }
 
     timeCount = () => {
         this.props.beginS.replayAsync();
         this.props.endS.pauseAsync();
         console.log('be');
-        this.inervalId = setInterval(() => {
+        this.intervalTime = setInterval(() => {
             if ( this.state.time === 0 ) {
-                clearInterval(this.inervalId);
-                this.nextRun();
+                clearInterval(this.intervalTime);
+                this.props.beginS.pauseAsync();
+                this.props.endS.replayAsync();
+                this.intervalRest = setInterval(() => {
+                    if (this.state.restTime === 0){
+                        clearInterval(this.intervalRest);
+                        this.nextRun();
+                        return;
+                    }
+                    this.setState({restTime: this.state.restTime -1 });
+                },1000);
                 return;
             }
             this.setState(
@@ -85,7 +93,8 @@ class Task extends Component{
                             </TouchableOpacity>
                             <TextInput style={styles.itemText} placeholder={'Write a task'} value={this.state.name} onChangeText={this.changeText} />
                         </View>
-                        <TextInput keyboardType={'number-pad'} style={styles.circular} value={this.state.time.toString()} onChangeText={this.changeTime}/>
+                        <TextInput keyboardType={'number-pad'} style={styles.circular} value={this.state.time.toString()} onChangeText={time => this.changeTime(time,'time')}/>
+                        <TextInput keyboardType={'number-pad'} style={styles.circular} value={this.state.restTime.toString()} onChangeText={time => this.changeTime(time,'restTime')}/>
                     </TouchableOpacity>
                     </KeyboardAvoidingView>
             );
@@ -109,6 +118,7 @@ class Task extends Component{
                         <Text style={styles.itemText}>{this.props.text.name}</Text>
                     </View>
                     <View style={styles.circular}><Text>{this.state.time}</Text></View>
+                        <View style={styles.circular}><Text>{this.state.restTime}</Text></View>
                 </TouchableOpacity>
             </View>
         );
@@ -149,9 +159,10 @@ const styles = StyleSheet.create({
         maxWidth: '80%',
     },
     circular: {
-        height: 16,
-        width: 16,
+        height: 20,
+        width: 20,
     },
+
 });
 
 export default Task;

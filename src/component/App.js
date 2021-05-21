@@ -18,7 +18,8 @@ class App extends Component{
     task: {
       'id': 0,
       'name': '',
-      'timeLapse': '',
+      'timeLapse': null,
+      'restTime': null,
       'stop': false,
       'run': {
         'i': false,
@@ -54,11 +55,11 @@ class App extends Component{
   handleAddTask = () => {
     Keyboard.dismiss();
     let task = this.state.task;
-    if (task.timeLapse === '' ) {
-      task.timeLapse = this.state.timeDefault ;
-    }
-    else {
-      this.setState({ timeDefault: task.timeLapse });
+    if (this.state.task.timeLapse === null){
+      this.state.task.timeLapse = this.state.timeDefault;
+      if (this.state.task.restTime === null){
+        this.state.task.restTime = this.state.timeDefault;
+      }
     }
     this.setState({task});
     this.setState({
@@ -66,7 +67,8 @@ class App extends Component{
       task: {
         'id': this.state.task.id + 1,
         'name': '',
-        'timeLapse': '',
+        'timeLapse': this.state.task.timeLapse,
+        'restTime': this.state.task.restTime,
         'run': {
           'i': false,
           'finish': false,
@@ -82,11 +84,13 @@ class App extends Component{
     this.setState({taskItems, disable: false, updating: false, editDisabled: false });
   }
     /*Update*/
-  update = (id, time, name) => {
+  update = (id, time, restTime, name) => {
     let taskItems = [...this.state.taskItems];
     let index = taskItems.findIndex((item) => item.id === id);
-    taskItems[index].time = time;
+    taskItems[index].timeLapse = time;
+    taskItems[index].restTime = restTime;
     taskItems[index].name = name;
+    console.log(taskItems, id, time, index);
     this.setState({taskItems});
   }
   disableTouch = () => {
@@ -98,9 +102,9 @@ class App extends Component{
     task.name = text;
     this.setState({task});
   }
-  changeTime = (time) =>{
+  changeTime = (time, prop) =>{
     let task = this.state.task;
-    task.timeLapse = time;
+    task[prop] = time;
     this.setState({task});
   }
   /*Button*/
@@ -205,6 +209,7 @@ class App extends Component{
                               edit={this.state.editing}
                               update={this.update}
                               next={this.nextTask} delete={this.deleteTask}
+
                         />
                     )
                   })
@@ -225,8 +230,12 @@ class App extends Component{
           >
             <TextInput style={[styles.input, styles.head]} placeholder={'Write a task'} value={this.state.task.name}
                        onChangeText={text => this.changeText(text)}/>
-            <TextInput keyboardType={'number-pad'} style={[styles.input, styles.time]} placeholder={this.state.timeDefault.toString()} value={this.state.task.timeLapse}
-                       onChangeText={time => this.changeTime(time)}/>
+                <Text>T</Text>
+            <TextInput keyboardType={'number-pad'} style={[styles.input, styles.time]} placeholder={(this.state.task.timeLapse ?? this.state.timeDefault).toString()} value={this.state.task.timeLapse}
+                       onChangeText={time => this.changeTime(time, 'timeLapse')}/>
+                <Text>R</Text>
+            <TextInput keyboardType={'number-pad'} style={[styles.input, styles.time]} placeholder={(this.state.task.restTime ?? this.state.timeDefault).toString()} value={this.state.task.restTime}
+                       onChangeText={time => this.changeTime(time, 'restTime')}/>
             <TouchableOpacity onPress={this.handleAddTask}>
               <View style={styles.addWrapper}>
                 <Text style={styles.addText}>+</Text>
