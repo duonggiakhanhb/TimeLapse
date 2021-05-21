@@ -18,9 +18,9 @@ class Task extends Component{
         this.setState({[prop]: time});
     }
     nextRun = () => {
-        this.props.setId(this.props.id + 1);
-        this.props.next(this.props.id, false, true);
-        this.props.next(this.props.id+1, true, false);
+        this.props.setId(this.props.id + 1);    /* set idCrurrent +1 */
+        this.props.next(this.props.id, true, true, true);   /* set restFinish = true */
+        this.props.next(this.props.id+1, true, false);      /* in next item change i = true to run */
     }
     disableTouch = () => {
         this.props.disableTouch();
@@ -33,39 +33,54 @@ class Task extends Component{
     }
 
     componentDidUpdate(prevProps) {
-        if ( this.props.stop === true ) {
+        /*Stop when props.stop is false*/
+        if ( this.props.stop === false ) {
             //this.props.endS.pauseAsync();
             clearInterval(this.intervalTime);
+            clearInterval(this.intervalRest);
+            return;
         }
-        if ( (prevProps.run.i !== this.props.run.i
-            || (prevProps.stop !== this.props.stop && this.props.stop === false ))
-            && this.props.run.i === true ) {
-            //this.props.beginS.playAsync();
-            this.timeCount();
+        /* Run: stop is true
+        * i CHANGE or stop be CLICKED
+        * ID Current*/
+        if ( ( prevProps.run.i !== this.props.run.i
+            || prevProps.stop !== this.props.stop )
+            && this.props.stop === true && this.props.idCurr === this.props.text.id
+        ) {
+                clearInterval(this.intervalRest);
+                clearInterval(this.intervalTime);
+                this.timeCount();
         }
     }
     componentWillUnmount() {
-        //this.props.endS.pauseAsync();
+        clearInterval(this.intervalRest);
         clearInterval(this.intervalTime);
     }
-
+    restTimeCount = () => {
+    this.intervalRest = setInterval(() => {
+        if (this.state.restTime === 0){
+            clearInterval(this.intervalRest);
+            /* restFinish true*/
+            if( !this.props.run.restFinish ) this.nextRun();
+            return;
+        }
+        this.setState({restTime: this.state.restTime -1 });
+    },1000);
+}
     timeCount = () => {
         this.props.beginS.replayAsync();
         this.props.endS.pauseAsync();
-        console.log('be');
         this.intervalTime = setInterval(() => {
             if ( this.state.time === 0 ) {
                 clearInterval(this.intervalTime);
-                this.props.beginS.pauseAsync();
-                this.props.endS.replayAsync();
-                this.intervalRest = setInterval(() => {
-                    if (this.state.restTime === 0){
-                        clearInterval(this.intervalRest);
-                        this.nextRun();
-                        return;
-                    }
-                    this.setState({restTime: this.state.restTime -1 });
-                },1000);
+                if( this.props.run.finish == false ) {
+                    /* Time run out set finish true and play endS sound*/
+                    this.props.next(this.props.id, true, true);
+                    this.props.beginS.pauseAsync();
+                    this.props.endS.replayAsync();
+                }
+                /* Run rest time when time=0 */
+                this.restTimeCount();
                 return;
             }
             this.setState(

@@ -20,10 +20,10 @@ class App extends Component{
       'name': '',
       'timeLapse': null,
       'restTime': null,
-      'stop': false,
       'run': {
         'i': false,
         'finish': false,
+        'restFinish': false,
       }
     },
     taskItems: [],
@@ -72,6 +72,7 @@ class App extends Component{
         'run': {
           'i': false,
           'finish': false,
+          'restFinish': false,
         }
       },
     });
@@ -90,7 +91,6 @@ class App extends Component{
     taskItems[index].timeLapse = time;
     taskItems[index].restTime = restTime;
     taskItems[index].name = name;
-    console.log(taskItems, id, time, index);
     this.setState({taskItems});
   }
   disableTouch = () => {
@@ -134,7 +134,7 @@ class App extends Component{
     let index = taskItems.findIndex(item =>
         item.id === this.state.idCurr
     );
-    taskItems[index] = {...taskItems[index],run: {i: true, finish: false}, stop: false }
+    taskItems[index] = {...taskItems[index],run: {i: true, finish: taskItems[index].run.finish}}
     this.setState({ taskItems, stop: true, start: false });
   }
     /*Stop*/
@@ -154,13 +154,12 @@ class App extends Component{
     if (this.state.taskItems.length <= id ) {
       this.setState({ stop: false, start: false });
       this.endS.pauseAsync();
-      console.log('over');
       this.sound.replayAsync();
       return;
     }
     this.setState({idCurr: this.state.taskItems[id].id })
   }
-  nextTask = (index, iValue, fValue) => {
+  nextTask = (index, iValue, fValue, rValue= false) => {
     if (index >= this.state.taskItems.length ) return;
     this.setState(({taskItems}) => ({
       taskItems: [
@@ -170,6 +169,7 @@ class App extends Component{
           run: {
             i: iValue,
             finish: fValue,
+            restFinish: rValue,
           },
         },
         ...taskItems.slice(index+1)
@@ -201,7 +201,8 @@ class App extends Component{
                   this.state.taskItems.map((item, index) => {
                     return (
                         <Task key={item.id} id={index} text={item}
-                              setId={this.setIdCurr} run={item.run} stop={item.stop}
+                              setId={this.setIdCurr} run={item.run} stop={this.state.stop}
+                              idCurr={this.state.idCurr}
                               disable={this.state.disable}
                               disableTouch={this.disableTouch}
                               beginS={this.beginS}
