@@ -16,6 +16,9 @@ class Task extends Component{
         this.setState({time});
     }
     nextRun = () => {
+        this.props.beginS.pauseAsync();
+        this.props.endS.replayAsync();
+        console.log('end');
         this.props.setId(this.props.id + 1);
         this.props.next(this.props.id, false, true);
         this.props.next(this.props.id+1, true, false);
@@ -48,14 +51,13 @@ class Task extends Component{
     }
 
     timeCount = () => {
-        this.props.endS.pauseAsync();
         this.props.beginS.replayAsync();
+        this.props.endS.pauseAsync();
+        console.log('be');
         this.inervalId = setInterval(() => {
             if ( this.state.time === 0 ) {
                 clearInterval(this.inervalId);
                 this.nextRun();
-                this.props.beginS.pauseAsync();
-                this.props.endS.replayAsync();
                 return;
             }
             this.setState(

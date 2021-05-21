@@ -150,6 +150,7 @@ class App extends Component{
     if (this.state.taskItems.length <= id ) {
       this.setState({ stop: false, start: false });
       this.endS.pauseAsync();
+      console.log('over');
       this.sound.replayAsync();
       return;
     }
