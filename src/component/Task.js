@@ -100,21 +100,21 @@ class Task extends Component{
         if( this.state.updating ) {
             return (
                     <KeyboardAvoidingView
-                        keyboardVerticalOffset = {64}
-                        behavior={Platform.OS === "ios" ? "padding" : "height"}
+                        keyboardVerticalOffset = {0}
+                        behavior={Platform.OS === "ios" ? "position" : "height"}
                     >
-                    <TouchableOpacity style={[styles.item, styles.itemUpdate]}
+                    <TouchableOpacity style={[styles.item]}
                                       onLongPress={this.disableTouch}>
                         <View style={styles.itemLeft}>
-                            <TouchableOpacity
+                            <TouchableOpacity style={styles.square}
                                 onPress={() => props.delete(props.text.id) }>
-                                <View style={[styles.square, {backgroundColor: '#ec3d64'} ]}>
-                                </View>
                             </TouchableOpacity>
                             <TextInput style={styles.itemText} placeholder={'Write a task'} value={this.state.name} onChangeText={this.changeText} />
                         </View>
-                        <TextInput keyboardType={'number-pad'} style={styles.circular} value={this.state.time.toString()} onChangeText={time => this.changeTime(time,'time')}/>
-                        <TextInput keyboardType={'number-pad'} style={styles.circular} value={this.state.restTime.toString()} onChangeText={time => this.changeTime(time,'restTime')}/>
+                        <View style={styles.time} >
+                        <TextInput keyboardType={'number-pad'} style={[styles.timeC]} value={this.state.time.toString()} onChangeText={time => this.changeTime(time,'time')}/>
+                        <TextInput keyboardType={'number-pad'} style={[styles.timeR]} value={this.state.restTime.toString()} onChangeText={time => this.changeTime(time,'restTime')}/>
+                        </View>
                     </TouchableOpacity>
                     </KeyboardAvoidingView>
             );
@@ -131,14 +131,15 @@ class Task extends Component{
                         <TouchableOpacity
                             /*disabled add: edit false or disabled true*/
                             disabled={ !this.props.edit ? true : (this.props.disable) }
-                            onPress={() => props.delete(props.text.id) }>
-                            <View style={[styles.square, this.props.edit ? {backgroundColor: '#ec3d64'}: null]}>
-                            </View>
-                        </TouchableOpacity>
+                            onPress={() => props.delete(props.text.id) }
+                            style={[styles.square, this.props.edit ? {backgroundColor: '#ec3d64'}: null]}
+                        />
                         <Text style={styles.itemText}>{this.props.text.name}</Text>
                     </View>
-                    <View style={styles.circular}><Text>{this.state.time}</Text></View>
-                        <View style={styles.circular}><Text>{this.state.restTime}</Text></View>
+                    <View style={styles.time}>
+                        <Text style={styles.timeC}>{this.state.time}</Text>
+                        <Text style={styles.timeR}>{this.state.restTime}</Text>
+                    </View>
                 </TouchableOpacity>
             </View>
         );
@@ -148,35 +149,70 @@ class Task extends Component{
 const styles = StyleSheet.create({
     item: {
         backgroundColor: '#FFF',
-        padding: 15,
         borderRadius: 10,
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
         marginBottom: 20,
+        width: 336.75,
+        height: 86,
     },
-    itemupdating: {
+    /* Square and Text */
+    itemLeft: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        left: 7.25,
+    },
+    square: {
+        position: 'relative',
+        width: 20.72,
+        height: 20.72,
+        borderRadius: 4.84504,
+        backgroundColor: '#3f7fec',
+    },
+    itemText: {
+        maxWidth: 240,
+        maxHeight: 86,
+        marginLeft: 10,
+        fontFamily: 'Roboto-Regular',
+        fontStyle: 'normal',
+        fontWeight: 'normal',
+        fontSize: 15.5041,
+        lineHeight: 18,
+        display: 'flex',
+        alignItems: 'center',
+        color: '#0D0D0D',
+        textAlignVertical: 'center',
+    },
+    /* Time */
+    time: {
+        position: 'absolute',
+        width: 47,
+        height: 58,
+        left: 284,
+        top: 21,
+        alignItems: 'center',
+        fontFamily: 'Roboto',
+        fontStyle: 'normal',
+        fontWeight: 'normal',
+        fontSize: 16,
+        lineHeight: 18,
+        color: '#0D0D0D',
+    },
+    timeC: {
+        position: 'absolute',
+        color: '#1DE348',
+    },
+    timeR: {
+        position: 'relative',
+        color: 'rgba(13, 13, 13, 0.76)',
+        marginTop: 28,
+    },
+    itemUpdating: {
         width: '100%',
         backgroundColor: '#e0d0d0',
     },
     itemNoUpdate: {
         opacity: 0.5,
-    },
-    itemLeft: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        flexWrap: 'wrap'
-    },
-    square: {
-        width: 24,
-        height: 24,
-        backgroundColor: '#3f7fec',
-        opacity: 0.4,
-        borderRadius: 5,
-        marginRight: 15,
-    },
-    itemText: {
-        maxWidth: '80%',
     },
     circular: {
         height: 20,
