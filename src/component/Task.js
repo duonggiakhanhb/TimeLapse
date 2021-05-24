@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#3f7fec',
     },
     itemText: {
-        maxWidth: 240,
+        width: 240,
         maxHeight: 86,
         marginLeft: 10,
         fontFamily: 'Roboto-Regular',
