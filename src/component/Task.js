@@ -106,7 +106,7 @@ class Task extends Component{
                     <TouchableOpacity style={[styles.item]}
                                       onLongPress={this.disableTouch}>
                         <View style={styles.itemLeft}>
-                            <TouchableOpacity style={styles.square}
+                            <TouchableOpacity style={[styles.square, this.props.edit ? {backgroundColor: '#ec3d64'}: null]}
                                 onPress={() => props.delete(props.text.id) }>
                             </TouchableOpacity>
                             <TextInput style={styles.itemText} placeholder={'Write a task'} value={this.state.name} onChangeText={this.changeText} />
