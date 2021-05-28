@@ -6,9 +6,5 @@ Mobile App for Calisthenics *by* **Adam**
 
 ***If error to try:***
 
-*change path in node_modules/expo/AppEntries.js to:*
->./../../src/component/App
-
-*or*
-
->expo install expo-av
+*change path in node_modules/expo/AppEntry.js to:*
+>../../src/component/App

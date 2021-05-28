@@ -100,8 +100,9 @@ class Task extends Component{
         if( this.state.updating ) {
             return (
                     <KeyboardAvoidingView
-                        keyboardVerticalOffset = {0}
-                        behavior={Platform.OS === "ios" ? "position" : "height"}
+                        keyboardVerticalOffset = {150}
+                        behavior={Platform.OS === "ios" ? "padding" : "height"}
+                        style={{flex: 1}}
                     >
                     <TouchableOpacity style={[styles.item]}
                                       onLongPress={this.disableTouch}>
