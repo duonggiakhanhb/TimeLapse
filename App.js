@@ -9,7 +9,6 @@ class App extends Component {
    async componentDidMount(){
         setTimeout(() => {
             this.setState({loading: false});
-            console.log(this.state.loading);
         }, 2500);
    }
 
@@ -24,7 +23,7 @@ class App extends Component {
                 </View>
             )
         }
-        return <AppMain/>
+        return <AppMain />
     }
 }
 const styles = StyleSheet.create({
