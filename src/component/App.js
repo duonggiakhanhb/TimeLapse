@@ -190,9 +190,10 @@ class App extends Component{
     }));
   }
   render() {
-    var backMain = !this.state.editing
+    /*var backMain = !this.state.editing
         ? require("./data/image/backGroundMain.png")
-        : require("./data/image/backGround2.png");
+        : require("./data/image/backGround2.png");*/
+    var backMain = require("./data/image/background/background.png")
     if(!this.state.fontsLoaded){
       return (
           <View>
@@ -205,11 +206,12 @@ class App extends Component{
           <ImageBackground source={backMain} style={styles.background}>
           {/* Navabar */}
           <View style={styles.nav}>
-            <Text style={[styles.Title, this.state.editing && {color: '#FFFFFF'}]}>Today's tasks</Text>
+            <Text style={[styles.Title, this.state.editing && {color: '#671F00'}]}>Today's tasks</Text>
 
             <TouchableOpacity disabled={this.state.editDisabled} style={styles.edit} onPress={this.activeEdit} >
                 {/*If editing turn on: "editing" is "Red", else "Blue"*/}
-            <Text style={[styles.editText, this.state.editing && true ? {color: 'red'} : {color: 'blue'}]}>Edit</Text>
+            {/*<Text style={[styles.editText, this.state.editing && true ? {color: 'red'} : {color: 'blue'}]}>Edit</Text>*/}
+              <Image style={styles.editVector} source={require("./data/image/icon/more.png")} />
             </TouchableOpacity>
           </View>
           {/* Added this scroll view to enable scrolling when list gets longer than the page */}
@@ -313,9 +315,9 @@ const styles = StyleSheet.create({
   },
   /* Navabar */
   nav: {
-    position: 'absolute',
+    position: 'relative',
     width: '100%',
-    height: 50,
+    height: 80,
     flexDirection: 'row',
     top: 28,
     zIndex: 10,
@@ -332,6 +334,8 @@ const styles = StyleSheet.create({
   },
   edit: {
     position: "absolute",
+    width: 30,
+    height: 10,
     right: 10,
   },
   editText: {
@@ -341,6 +345,10 @@ const styles = StyleSheet.create({
     fontWeight: "normal",
     lineHeight: 19,
     color: "#000000"
+  },
+  editVector: {
+    width: 24,
+    height: 6,
   },
   /* Footer */
   Footer: {
@@ -450,11 +458,11 @@ const styles = StyleSheet.create({
     position: 'relative',
     //height: 482,
     width: '100%',
-    top: 97,
+    top: 30,
   },
   items: {
     alignItems: 'center',
-    marginTop: 30,
+    //marginTop: 30,
     marginBottom: 150,
   },
 });

@@ -100,8 +100,7 @@ class Task extends Component{
         if( this.state.updating ) {
             return (
                     <KeyboardAvoidingView
-                        keyboardVerticalOffset = {150}
-                        behavior={Platform.OS === "ios" ? "padding" : "height"}
+                        behavior={Platform.OS === "ios" ? "position" : "height"}
                         style={{flex: 1}}
                     >
                     <TouchableOpacity style={[styles.item]}
@@ -168,7 +167,7 @@ const styles = StyleSheet.create({
         width: 20.72,
         height: 20.72,
         borderRadius: 4.84504,
-        backgroundColor: '#3f7fec',
+        backgroundColor: '#FFF06D',
     },
     itemText: {
         width: 240,
