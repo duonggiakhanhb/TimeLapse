@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { KeyboardAvoidingView, ImageBackground, Image, Platform, StyleSheet, Text, View, TextInput, TouchableOpacity, Keyboard, ScrollView } from 'react-native';
+import { AsyncStorage, KeyboardAvoidingView, ImageBackground, Image, Platform, StyleSheet, Text, View, TextInput, TouchableOpacity, Keyboard, ScrollView } from 'react-native';
 import Task from './Task';
 import { Audio } from 'expo-av';
 import * as Font from "expo-font";
@@ -32,6 +32,7 @@ class AppMain extends Component{
   }
 
   componentDidMount() {
+    this.getData();
     this.sound = new Audio.Sound();
     this.beginS = new Audio.Sound();
     this.endS = new Audio.Sound();
@@ -47,6 +48,11 @@ class AppMain extends Component{
     this.endS.pauseAsync();
     this.beginS.pauseAsync();
     this.sound.pauseAsync();
+  }
+  componentDidUpdate(preProps, preStates){
+    if ( preStates.taskItems !== this.state.taskItems ) {
+      this.setData();
+    }
   }
 
   async loadFonts(){
@@ -188,6 +194,17 @@ class AppMain extends Component{
       ]
     }));
   }
+  /* Save data */
+  setData() {
+    localStorage.setItem('tasksData', JSON.stringify(this.state.taskItems));
+  }
+  getData(){
+    let data = localStorage.getItem('tasksData') ?? [];
+    data = JSON.parse(data);
+    this.setState({taskItems: data});
+  }
+
+
   render() {
     /*var backMain = !this.state.editing
         ? require("./data/image/backGroundMain.png")
