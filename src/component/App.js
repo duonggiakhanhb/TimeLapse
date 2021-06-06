@@ -4,7 +4,7 @@ import Task from './Task';
 import { Audio } from 'expo-av';
 import * as Font from "expo-font";
 import Svg, {Ellipse, Path, Rect} from "react-native-svg";
-class App extends Component{
+class AppMain extends Component{
   state = {
     id: 0,
     idCurr: 0,
@@ -466,4 +466,4 @@ const styles = StyleSheet.create({
     marginBottom: 150,
   },
 });
-export default App;
+export default AppMain;
