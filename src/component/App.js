@@ -114,7 +114,6 @@ class AppMain extends Component{
     this.setState({task});
   }
   changeTime = (time, prop) =>{
-    console.log(time);
     let task = this.state.task;
     task[prop] = time;
     this.setState({task});
