@@ -190,10 +190,9 @@ class AppMain extends Component{
     }));
   }
   render() {
-    /*var backMain = !this.state.editing
+    var backMain = !this.state.editing
         ? require("./data/image/backGroundMain.png")
-        : require("./data/image/backGround2.png");*/
-    var backMain = require("./data/image/background/background.png")
+        : require("./data/image/backGround2.png");
     if(!this.state.fontsLoaded){
       return (
           <View>
@@ -206,12 +205,11 @@ class AppMain extends Component{
           <ImageBackground source={backMain} style={styles.background}>
           {/* Navabar */}
           <View style={styles.nav}>
-            <Text style={[styles.Title, this.state.editing && {color: '#671F00'}]}>Today's tasks</Text>
+            <Text style={[styles.Title, this.state.editing && {color: '#FFFFFF'}]}>Today's tasks</Text>
 
             <TouchableOpacity disabled={this.state.editDisabled} style={styles.edit} onPress={this.activeEdit} >
                 {/*If editing turn on: "editing" is "Red", else "Blue"*/}
-            {/*<Text style={[styles.editText, this.state.editing && true ? {color: 'red'} : {color: 'blue'}]}>Edit</Text>*/}
-              <Image style={styles.editVector} source={require("./data/image/icon/more.png")} />
+            <Text style={[styles.editText, this.state.editing && true ? {color: 'red'} : {color: 'blue'}]}>Edit</Text>
             </TouchableOpacity>
           </View>
           {/* Added this scroll view to enable scrolling when list gets longer than the page */}
@@ -277,6 +275,9 @@ class AppMain extends Component{
           </KeyboardAvoidingView>
             : /* Button Display (editing is false) */
               <View style={styles.Footer}>
+            <TouchableOpacity onPress={this.restart} style={styles.Restart}>
+            <Text style={styles.buttonText}>Restart</Text>
+            </TouchableOpacity>
                 {!this.state.stop
                     ? <TouchableOpacity onPress={this.startHandle}
                                                       style={[styles.Start, (this.state.taskItems.length === 0 ) && {opacity: 0.8}]}
@@ -294,9 +295,6 @@ class AppMain extends Component{
                         <Path d="M99.4688 31.2695C99.4688 30.7161 99.2734 30.293 98.8828 30C98.4922 29.7005 97.7891 29.388 96.7734 29.0625C95.7578 28.7305 94.9538 28.4049 94.3613 28.0859C92.7467 27.2135 91.9395 26.0384 91.9395 24.5605C91.9395 23.7923 92.1543 23.1087 92.584 22.5098C93.0202 21.9043 93.6419 21.4323 94.4492 21.0938C95.263 20.7552 96.1745 20.5859 97.1836 20.5859C98.1992 20.5859 99.1042 20.7715 99.8984 21.1426C100.693 21.5072 101.308 22.0247 101.744 22.6953C102.187 23.3659 102.408 24.1276 102.408 24.9805H99.4785C99.4785 24.3294 99.2734 23.8249 98.8633 23.4668C98.4531 23.1022 97.877 22.9199 97.1348 22.9199C96.4186 22.9199 95.862 23.0729 95.4648 23.3789C95.0677 23.6784 94.8691 24.0755 94.8691 24.5703C94.8691 25.0326 95.1003 25.4199 95.5625 25.7324C96.0312 26.0449 96.7181 26.3379 97.623 26.6113C99.2897 27.1126 100.504 27.7344 101.266 28.4766C102.027 29.2188 102.408 30.1432 102.408 31.25C102.408 32.4805 101.943 33.4473 101.012 34.1504C100.081 34.847 98.8275 35.1953 97.252 35.1953C96.1582 35.1953 95.1621 34.9967 94.2637 34.5996C93.3652 34.196 92.6784 33.6458 92.2031 32.9492C91.7344 32.2526 91.5 31.4453 91.5 30.5273H94.4395C94.4395 32.0964 95.377 32.8809 97.252 32.8809C97.9486 32.8809 98.4922 32.7409 98.8828 32.4609C99.2734 32.1745 99.4688 31.7773 99.4688 31.2695ZM107.594 21.8359V24.4336H109.4V26.5039H107.594V31.7773C107.594 32.168 107.669 32.4479 107.818 32.6172C107.968 32.7865 108.255 32.8711 108.678 32.8711C108.99 32.8711 109.267 32.8483 109.508 32.8027V34.9414C108.954 35.1107 108.385 35.1953 107.799 35.1953C105.82 35.1953 104.811 34.196 104.771 32.1973V26.5039H103.229V24.4336H104.771V21.8359H107.594ZM110.24 29.6191C110.24 28.571 110.442 27.6367 110.846 26.8164C111.249 25.9961 111.829 25.3613 112.584 24.9121C113.346 24.4629 114.228 24.2383 115.23 24.2383C116.656 24.2383 117.818 24.6745 118.717 25.5469C119.622 26.4193 120.126 27.6042 120.23 29.1016L120.25 29.8242C120.25 31.4453 119.798 32.7474 118.893 33.7305C117.988 34.707 116.773 35.1953 115.25 35.1953C113.727 35.1953 112.509 34.707 111.598 33.7305C110.693 32.7539 110.24 31.4258 110.24 29.7461V29.6191ZM113.062 29.8242C113.062 30.8268 113.251 31.5951 113.629 32.1289C114.007 32.6562 114.547 32.9199 115.25 32.9199C115.934 32.9199 116.467 32.6595 116.852 32.1387C117.236 31.6113 117.428 30.7715 117.428 29.6191C117.428 28.6361 117.236 27.8743 116.852 27.334C116.467 26.7936 115.927 26.5234 115.23 26.5234C114.54 26.5234 114.007 26.7936 113.629 27.334C113.251 27.8678 113.062 28.6979 113.062 29.8242ZM131.5 29.8145C131.5 31.4421 131.129 32.7474 130.387 33.7305C129.651 34.707 128.655 35.1953 127.398 35.1953C126.331 35.1953 125.468 34.8242 124.811 34.082V39.0625H121.988V24.4336H124.605L124.703 25.4688C125.387 24.6484 126.279 24.2383 127.379 24.2383C128.681 24.2383 129.693 24.7201 130.416 25.6836C131.139 26.6471 131.5 27.9753 131.5 29.668V29.8145ZM128.678 29.6094C128.678 28.6263 128.502 27.8678 128.15 27.334C127.805 26.8001 127.301 26.5332 126.637 26.5332C125.751 26.5332 125.143 26.8717 124.811 27.5488V31.875C125.156 32.5716 125.771 32.9199 126.656 32.9199C128.004 32.9199 128.678 31.8164 128.678 29.6094Z" fill="white"/>
                       </Svg>
                     </TouchableOpacity>}
-                <TouchableOpacity onPress={this.restart} style={styles.Restart}>
-                  <Text style={styles.buttonText}>Restart</Text>
-                </TouchableOpacity>
             </View>}
           </ImageBackground>
         </View>
@@ -315,28 +313,25 @@ const styles = StyleSheet.create({
   },
   /* Navabar */
   nav: {
-    position: 'relative',
-    width: '100%',
-    height: 80,
-    flexDirection: 'row',
+    position: 'absolute',
+    width: 320,
+    height: 50,
+    left: 22,
     top: 28,
     zIndex: 10,
 
   },
   Title: {
-    position: "relative",
+    position: "absolute",
     fontFamily: "Roboto-Bold",
     fontSize: 35,
     lineHeight: 41,
     color: "#000000",
-    left: 20,
     //mixBlendMode: "normal"
   },
   edit: {
     position: "absolute",
-    width: 30,
-    height: 10,
-    right: 10,
+    left: 314,
   },
   editText: {
     fontSize: 16,
@@ -346,24 +341,19 @@ const styles = StyleSheet.create({
     lineHeight: 19,
     color: "#000000"
   },
-  editVector: {
-    width: 24,
-    height: 6,
-  },
   /* Footer */
   Footer: {
     position: 'absolute',
-    width: '100%',
+    width: 337,
     height: 50,
-    bottom: 18,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-
+    left: 20,
+    top: 595,
   },
   Restart: {
-    position: 'relative',
+    position: 'absolute',
     width: 107,
     height: 50,
+    left: 230,
     backgroundColor: '#424242',
     borderRadius: 40,
     justifyContent: 'center',
@@ -378,26 +368,25 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
   },
   Start: {
-    position: 'relative',
+    position: 'absolute',
     width: 217,
     height: 50,
   },
   btnStart: {
-
+    width: 217,
+    height: 50,
   },
   writeTaskWrapper: {
     position: 'absolute',
-    width: '100%',
-    alignItems: 'center',
-    bottom: 18,
+    width: 337,
+    height: 65,
+    left: 20,
+    top: 589,
   },
   writeFooter: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    width: 337,
-    height: 65,
     alignItems: 'center',
-    margin: 'auto',
   },
   nameInput: {
     position: 'relative',
@@ -457,12 +446,12 @@ const styles = StyleSheet.create({
   tasksWrapper: {
     position: 'relative',
     //height: 482,
-    width: '100%',
-    top: 30,
+    width: 336.75,
+    left: 20,
+    top: 97,
   },
   items: {
-    alignItems: 'center',
-    //marginTop: 30,
+    marginTop: 30,
     marginBottom: 150,
   },
 });
