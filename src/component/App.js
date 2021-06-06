@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { AsyncStorage, KeyboardAvoidingView, ImageBackground, Image, Platform, StyleSheet, Text, View, TextInput, TouchableOpacity, Keyboard, ScrollView } from 'react-native';
+import { KeyboardAvoidingView, ImageBackground, Image, Platform, StyleSheet, Text, View, TextInput, TouchableOpacity, Keyboard, ScrollView } from 'react-native';
 import Task from './Task';
 import { Audio } from 'expo-av';
 import * as Font from "expo-font";
 import Svg, {Ellipse, Path, Rect} from "react-native-svg";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 class AppMain extends Component{
   state = {
     id: 0,
@@ -195,13 +196,21 @@ class AppMain extends Component{
     }));
   }
   /* Save data */
-  setData() {
-    localStorage.setItem('tasksData', JSON.stringify(this.state.taskItems));
+  setData = async () => {
+    try {
+      await AsyncStorage.setItem('tasksData', JSON.stringify(this.state.taskItems));
+    } catch (e){
+      this.restart();
+    }
   }
-  getData(){
-    let data = localStorage.getItem('tasksData') ?? [];
-    data = JSON.parse(data);
-    this.setState({taskItems: data});
+  getData= async () => {
+    try {
+      let data = await AsyncStorage.getItem('tasksData') ?? [];
+      data = JSON.parse(data);
+      this.setState({taskItems: data});
+    } catch (e){
+      this.restart();
+    }
   }
 
 
