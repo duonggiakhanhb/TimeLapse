@@ -34,6 +34,9 @@ class AppMain extends Component{
 
   componentDidMount() {
     this.getData();
+    if( this.state.taskItems != null ) {
+      this.setState({ start : true });
+    }
     this.sound = new Audio.Sound();
     this.beginS = new Audio.Sound();
     this.endS = new Audio.Sound();
